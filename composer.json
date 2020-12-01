@@ -10,7 +10,7 @@
             "homepage": "http://yhd.china-ceec-cooperation.com/"
         }
     ],
-    "require-dev": {
+    "require": {
         "getuilaboratory/getui-pushapi-php-client": "dev-master"
     },
     "autoload": {
