@@ -2,7 +2,6 @@
     "name": "ggss/push",
     "description": "this is an integrated push class",
     "type": "library",
-    "version": "0.1",
     "authors": [
         {
             "name": "service",
