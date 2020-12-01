@@ -11,9 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php" : ">=5.5"
-    },
-    "require-dev": {
+        "php" : ">=5.5",
         "getuilaboratory/getui-pushapi-php-client": "dev-master"
     },
     "autoload": {
