@@ -10,6 +10,8 @@
     ],
     "require": {
         "getuilaboratory/getui-pushapi-php-client": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {"PushClient": ""}
     }
-
 }

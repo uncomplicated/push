@@ -19,7 +19,7 @@ use NotifyInfo_Type;
 use RequestException;
 use SimpleAlertMsg;
 use Yii;
-class PushClientService
+class PushClient
 {
 
     public $igt;
