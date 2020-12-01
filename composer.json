@@ -2,10 +2,11 @@
     "name": "ggss/push",
     "description": "this is an integrated push class",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "service",
-            "email": "service@ggss.com"
+            "homepage": "http://yhd.china-ceec-cooperation.com/"
         }
     ],
     "require": {
