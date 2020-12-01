@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ggss//push//" : "src"
+            "ggss\\push\\" : "src/"
         }
     }
 }
