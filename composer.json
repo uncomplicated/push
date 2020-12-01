@@ -3,13 +3,14 @@
     "description": "this is an integrated push class",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "service",
             "homepage": "http://yhd.china-ceec-cooperation.com/"
         }
     ],
-    "require": {
+    "require-dev": {
         "getuilaboratory/getui-pushapi-php-client": "dev-master"
     },
     "autoload": {
