@@ -27,7 +27,6 @@ class M201029081014Message extends BaseMigration
             'target_id' => $this->targetId()->notNull()->comment('目标id'),
             'push_type' => $this->tinyInteger(1)->notNull()->defaultValue(0)->comment('推送类型 0不推送1单推2批量推3群推'),
             'push_status' => $this->tinyInteger(1) ->notNull()->defaultValue(0)->comment('推送状态 0未推送1已推送2推送中3推送失败'),
-            ''
         ]);
     }
 
