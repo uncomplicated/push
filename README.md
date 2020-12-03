@@ -1,3 +1,3 @@
 # push
 
-composer require ggss/push dev:master
+composer require ggss/push : dev-master
