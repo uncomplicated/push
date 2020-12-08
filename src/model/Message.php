@@ -3,6 +3,7 @@
 namespace ggss\push\models;
 
 use yii\base\Model;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "message".
@@ -75,5 +76,14 @@ class Message extends Model
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
         ];
+    }
+
+    public static function firstOrFail($condition)
+    {
+        $one = static::findOne($condition);
+        if (!$one) {
+            throw new NotFoundHttpException('数据不存在');
+        }
+        return $one;
     }
 }
