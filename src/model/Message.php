@@ -18,6 +18,7 @@ use yii\base\Model;
  * @property int $target_id 目标id
  * @property int $created_at 创建时间
  * @property int|null $updated_at 更新时间
+ * @property int|null $push_status 推送状态
  * @property int|null $deleted_at
  * @property int|null $is_deleted
  * @property int|null $created_by
@@ -41,7 +42,7 @@ class Message extends Model
     public function rules()
     {
         return [
-            [['send_id', 'type', 'is_read', 'target_id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by','push_type'], 'integer'],
+            [['send_id', 'type', 'is_read', 'target_id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by','push_type','push_status'], 'integer'],
             [['target_table', 'target_id','receive_id'], 'required'],
             [['title'], 'string', 'max' => 64],
             [['content'], 'string', 'max' => 255],
@@ -66,6 +67,7 @@ class Message extends Model
             'target_table' => '目标表',
             'target_id' => '目标id',
             'push_type' => '推送类型',
+            'push_status' => '推送状态',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'deleted_at' => 'Deleted At',
