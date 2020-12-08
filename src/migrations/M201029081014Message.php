@@ -7,7 +7,7 @@ use yii\db\Migration;
 /**
  * Class M201029081014Message
  */
-class M201029081014Message extends BaseMigration
+class M201029081014Message extends Migration
 {
     /**
      * {@inheritdoc}
@@ -27,6 +27,12 @@ class M201029081014Message extends BaseMigration
             'target_id' => $this->targetId()->notNull()->comment('目标id'),
             'push_type' => $this->tinyInteger(1)->notNull()->defaultValue(0)->comment('推送类型 0不推送1单推2批量推3群推'),
             'push_status' => $this->tinyInteger(1) ->notNull()->defaultValue(0)->comment('推送状态 0未推送1已推送2推送中3推送失败'),
+            'created_at' => $this->integer(10)->notNull()->comment('创建时间'),
+            'updated_at' => $this->integer(10)->null()->comment('更新时间'),
+            'deleted_at' => $this->integer(10)->null(),
+            'is_deleted' => $this->boolean()->defaultValue(0),
+            'created_by' => $this->integer(10)->null(),
+            'updated_by' => $this->integer(10)->null(),
         ]);
     }
 
