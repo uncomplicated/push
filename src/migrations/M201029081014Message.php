@@ -34,6 +34,17 @@ class M201029081014Message extends Migration
             'created_by' => $this->integer(10)->null(),
             'updated_by' => $this->integer(10)->null(),
         ]);
+
+        $this->createTable('device',[
+            'id' => $this->primaryKey(),
+            'uid' => $this->integer(11)->notNull()->comment('用户ID'),
+            'device_no' => $this->string(64)->notNull()->comment('设备号'),
+            'ip' => $this->string(32)->notNull()->comment('IP'),
+            'system' => $this->string(32)->notNull()->comment('系统'),
+            'version' => $this->string(32)->notNull()->comment('版本号'),
+        ]);
+        $this->createIndex('idx_uid','device','uid');
+        $this->createIndex('idx_device_no','device','device_no');
     }
 
     /**
