@@ -1,6 +1,6 @@
 <?php
 
-namespace ggss\push\models;
+namespace ggss\push\model;
 
 use yii\base\Model;
 use yii\web\NotFoundHttpException;
