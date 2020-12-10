@@ -4,7 +4,7 @@
  * Date: 2020/12/8
  */
 
-namespace console\controllers;
+namespace ggss\push\swoole;
 
 
 use ggss\push\enums\MessageEnum;
