@@ -17,7 +17,7 @@ use Yii;
 class PushSwoole
 {
 
-    public function actionRun()
+    public function run()
     {
         $workerNum = 2;
         $pool = new Pool($workerNum);
