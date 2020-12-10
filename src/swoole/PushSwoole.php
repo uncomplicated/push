@@ -14,7 +14,7 @@ use ggss\push\PushClient;
 use Swoole\Process\Pool;
 use Yii;
 
-class PushController extends \yii\console\Controller
+class PushSwoole
 {
 
     public function actionRun()
