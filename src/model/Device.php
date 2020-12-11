@@ -74,17 +74,4 @@ class Device extends \yii\db\ActiveRecord
         return $one;
     }
 
-    public function notDeleted()
-    {
-        return $this->andWhere(['is_deleted' => 0]);
-    }
-    public function byUid(int $uid)
-    {
-        return $this->andWhere( ['uid' => $uid]);
-    }
-
-    public function byDevice(string $device)
-    {
-        return $this->andWhere( ['device_no' => $device]);
-    }
 }

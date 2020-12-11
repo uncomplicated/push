@@ -85,8 +85,4 @@ class Message extends \yii\db\ActiveRecord
         }
         return $one;
     }
-    public function notDeleted()
-    {
-        return $this->andWhere(['is_deleted' => 0]);
-    }
 }

@@ -17,37 +17,52 @@ use Yii;
 class PushSwoole
 {
 
-    public function run()
+    public function run($config)
     {
         $workerNum = 2;
         $pool = new Pool($workerNum);
 
-        $pool->on('WorkerStart', function ($pool, $workerId){
+        $pool->on('WorkerStart', function ($pool, $workerId) use($config){
             echo "worker#{$workerId} is Started \n";
-            $model = Message::find()->notDeleted()->andWhere(['push_status'=>MessageEnum::MESSAGE_PUSH_STATUS_DEFAULT])->orderBy(['id' => SORT_DESC])->one();
+            $model = Message::find()->andWhere(['is_deleted' => 0,'push_status'=>MessageEnum::MESSAGE_PUSH_STATUS_DEFAULT])->orderBy(['id' => SORT_DESC])->one();
             if (empty($model)) {
                 return;
             }
             if (!Yii::$app->mutex->acquire('lock_' . $model->id, 3)) {
                 return;
             }
-            $pushModel = new PushClient(Yii::$app->params['push']);
+            $pushModel = new PushClient($config);
             switch ($model->push_type){
                 case MessageEnum::MESSAGE_PUSH_TYPE_SINGLE :
                 case MessageEnum::MESSAGE_PUSH_TYPE_BATCH:
-                    $deviceModel = Device::find()->byUid($model->receive_id)->notDeleted()->one();
-                    if(empty($deviceModel) || empty($deviceModel->device_no) || (empty($model->title) && empty($model->content))){
+                    $deviceModel = Device::find()->where(['is_deleted' => 0,'uid' =>$model->receive_id ])->one();
+                    if(empty($deviceModel) || empty($deviceModel->device_no) || (empty($model->title) && empty($model->content)) ){//数据错误
+                        $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;
                     }
-                    $res = $pushModel->pushMessageToSingle($deviceModel->device_no,$model->title,$model->content,json_encode(['route' => MessageEnum::$urls[$model->type]]));
+                    //判断是否推送
+                    if($model->push_type == MessageEnum::MESSAGE_PUSH_TYPE_UNWANTED){
+                        $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
+                        return false;
+                    }
+                    //判断是否定时发送
+                    if(!empty($model->push_timing_at) && $model->push_timing_at > time()){
+                        return false;
+                    }
+                    $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
+                    $res = $pushModel->pushMessageToSingle($deviceModel->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]));
                     break;
                 case MessageEnum::MESSAGE_PUSH_TYPE_TO_APP:
+                    $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     $res = $pushModel->pushMessageToApp($model->content);
                     break;
             }
             if(isset($res['result'])){
+                $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
                 Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res['result'],'push');
                 return false;
+            }else{
+                $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
             }
 
             Yii::$app->mutex->release('lock_' . $model->id);
@@ -60,4 +75,11 @@ class PushSwoole
         $pool->start();
     }
 
+    private function updateMessageStatus(Message $model, $status){
+        $model->push_status = $status;
+        if($model->save()){
+            return true;
+        }
+        return false;
+    }
 }

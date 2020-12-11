@@ -26,4 +26,6 @@ class MessageEnum
     const MESSAGE_PUSH_STATUS_SUCCESS = 1;//已推送
     const MESSAGE_PUSH_STATUS_ONGOING = 2;//推送中
     const MESSAGE_PUSH_STATUS_ERROR = 3;//推送失败
+
+
 }
