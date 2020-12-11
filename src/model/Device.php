@@ -21,7 +21,7 @@ use yii\web\NotFoundHttpException;
  * @property int|null $created_by
  * @property int|null $updated_by
  */
-class Device extends Model
+class Device extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -72,5 +72,19 @@ class Device extends Model
             throw new NotFoundHttpException('数据不存在');
         }
         return $one;
+    }
+
+    public function notDeleted()
+    {
+        return $this->andWhere(['is_deleted' => 0]);
+    }
+    public function byUid(int $uid)
+    {
+        return $this->andWhere( ['uid' => $uid]);
+    }
+
+    public function byDevice(string $device)
+    {
+        return $this->andWhere( ['device_no' => $device]);
     }
 }

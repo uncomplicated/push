@@ -2,7 +2,6 @@
 
 namespace ggss\push\model;
 
-use yii\base\Model;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -27,7 +26,7 @@ use yii\web\NotFoundHttpException;
  * @property int|null $push_type
  * @property BaseActiveRecord $target
  */
-class Message extends Model
+class Message extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -85,5 +84,9 @@ class Message extends Model
             throw new NotFoundHttpException('数据不存在');
         }
         return $one;
+    }
+    public function notDeleted()
+    {
+        return $this->andWhere(['is_deleted' => 0]);
     }
 }
