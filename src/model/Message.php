@@ -42,10 +42,10 @@ class Message extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['send_id', 'type', 'is_read', 'target_id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by','push_type','push_status'], 'integer'],
+            [['send_id', 'type', 'is_read', 'target_id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by','push_type','push_status','push_timing_at'], 'integer'],
             [['target_table', 'target_id','receive_id'], 'required'],
             [['title'], 'string', 'max' => 64],
-            [['content'], 'string', 'max' => 255],
+            [['content','push_url'], 'string', 'max' => 255],
             [['receive_id'], 'integer'],
             [['target_table'], 'string', 'max' => 20],
         ];
@@ -68,6 +68,8 @@ class Message extends \yii\db\ActiveRecord
             'target_id' => '目标id',
             'push_type' => '推送类型',
             'push_status' => '推送状态',
+            'push_timing_at' => '定时推送时间',
+            'push_url' => '推送链接',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'deleted_at' => 'Deleted At',
