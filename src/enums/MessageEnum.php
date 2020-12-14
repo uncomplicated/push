@@ -27,5 +27,12 @@ class MessageEnum
     const MESSAGE_PUSH_STATUS_ONGOING = 2;//推送中
     const MESSAGE_PUSH_STATUS_ERROR = 3;//推送失败
 
+    public static $push_status_arr = [
+        self::MESSAGE_PUSH_STATUS_DEFAULT => '初始化',
+        self::MESSAGE_PUSH_STATUS_SUCCESS => '已推送',
+        self::MESSAGE_PUSH_STATUS_ONGOING => '推送中',
+        self::MESSAGE_PUSH_STATUS_ERROR => '推送失败'
+    ];
+
 
 }
