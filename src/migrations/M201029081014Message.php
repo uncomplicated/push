@@ -18,7 +18,7 @@ class M201029081014Message extends Migration
         $this->createTable('message', [
             'id' => $this->primaryKey(10),
             'title' => $this->string(64)->null()->comment('消息标题'),
-            'content' => $this->string(255)->defaultValue(0)->comment('消息内容'),
+            'content' => $this->string(255)->null()->comment('消息内容'),
             'send_id' => $this->integer(11)->defaultValue(0)->comment('发送者'),
             'receive_id' => $this->integer(11)->null()->comment('接收者'),
             'type' => $this->tinyInteger(2)->notNull()->defaultValue(0)->comment('消息类型'),
