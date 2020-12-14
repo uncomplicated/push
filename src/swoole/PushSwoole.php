@@ -23,7 +23,6 @@ class PushSwoole
         $pool = new Pool($workerNum);
 
         $pool->on('WorkerStart', function ($pool, $workerId) use($config){
-            echo "worker#{$workerId} is Started \n";
             $model = Message::find()->andWhere(['is_deleted' => 0,'push_status'=>MessageEnum::MESSAGE_PUSH_STATUS_DEFAULT])->orderBy(['id' => SORT_DESC])->one();
             if (empty($model)) {
                 return;

@@ -43,7 +43,6 @@ class Message extends \yii\db\ActiveRecord
     {
         return [
             [['send_id', 'type', 'is_read', 'target_id', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by','push_type','push_status','push_timing_at'], 'integer'],
-            [['target_table', 'target_id','receive_id'], 'required'],
             [['title'], 'string', 'max' => 64],
             [['content','push_url'], 'string', 'max' => 255],
             [['receive_id'], 'integer'],
