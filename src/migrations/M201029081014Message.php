@@ -44,6 +44,12 @@ class M201029081014Message extends Migration
             'ip' => $this->string(32)->notNull()->comment('IP'),
             'system' => $this->string(32)->notNull()->comment('系统'),
             'version' => $this->string(32)->notNull()->comment('版本号'),
+            'created_at' => $this->integer(10)->notNull()->comment('创建时间'),
+            'updated_at' => $this->integer(10)->null()->comment('更新时间'),
+            'deleted_at' => $this->integer(10)->null(),
+            'is_deleted' => $this->boolean()->defaultValue(0),
+            'created_by' => $this->integer(10)->null(),
+            'updated_by' => $this->integer(10)->null(),
         ]);
         $this->createIndex('idx_uid','device','uid');
         $this->createIndex('idx_device_no','device','device_no');

@@ -49,11 +49,12 @@ class PushSwoole
                         return false;
                     }
                     $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
-                    $res = $pushModel->pushMessageToSingle($deviceModel->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]));
+                    $res = $pushModel->pushMessageToSingle($deviceModel->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]),1,$deviceModel->system);
                     break;
                 case MessageEnum::MESSAGE_PUSH_TYPE_TO_APP:
                     $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     $res = $pushModel->pushMessageToApp($model->content);
+                    $res = $pushModel->pushMessageToApp($model->content,'','',[],'',1,'ios');
                     break;
             }
             if(isset($res['result'])){
