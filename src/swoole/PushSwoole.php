@@ -57,9 +57,9 @@ class PushSwoole
                     $res = $pushModel->pushMessageToApp($model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
                     break;
             }
-            if(isset($res['result'])){
+            if(is_string($res)){
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
-                Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res['result'],'push');
+                Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
                 return false;
             }else{
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
