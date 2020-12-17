@@ -30,6 +30,11 @@ class PushSwoole
             if (!Yii::$app->mutex->acquire('lock_' . $model->id, 3)) {
                 return;
             }
+            //判断是否推送
+            if($model->push_type == MessageEnum::MESSAGE_PUSH_TYPE_UNWANTED){
+                $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
+                return false;
+            }
             $pushModel = new PushClient($config);
             switch ($model->push_type){
                 case MessageEnum::MESSAGE_PUSH_TYPE_SINGLE :
@@ -39,19 +44,17 @@ class PushSwoole
                         $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;
                     }
-                    //判断是否推送
-                    if($model->push_type == MessageEnum::MESSAGE_PUSH_TYPE_UNWANTED){
-                        $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
-                        return false;
-                    }
-                    //判断是否定时发送
-                    if(!empty($model->push_timing_at) && $model->push_timing_at > time()){
-                        return false;
-                    }
                     $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     $res = $pushModel->pushMessageToSingle($deviceModel->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]),1,$deviceModel->system);
                     break;
                 case MessageEnum::MESSAGE_PUSH_TYPE_TO_APP:
+                    //判断是否定时发送
+                    if(!empty($model->push_timing_at) && $model->push_timing_at > time()){
+                        return false;
+                    }
+                    if(empty($model->push_timing_at) && isset($config['overtime']) &&  time() - $model->created_at < $config['overtime'] ){
+                        return false;
+                    }
                     $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]));
                     $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
