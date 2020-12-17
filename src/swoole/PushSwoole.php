@@ -53,8 +53,8 @@ class PushSwoole
                     break;
                 case MessageEnum::MESSAGE_PUSH_TYPE_TO_APP:
                     $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
-                    $res = $pushModel->pushMessageToApp($model->content,'','',[],json_encode(['route' =>$model->push_url]));
-                    $res = $pushModel->pushMessageToApp($model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
+                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]));
+                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
                     break;
             }
             if(is_string($res)){

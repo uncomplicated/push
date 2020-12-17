@@ -130,12 +130,12 @@ class PushClient
         }
     }
     //群推  $condition  ['phoneType' => 'ios','region'=>'上海']
-    public function pushMessageToApp($content, $timing='' , $speed='' , $condition = [],$transparent_content='',$messageType = 1,$platform='android')
+    public function pushMessageToApp($title,$content, $timing='' , $speed='' , $condition = [],$transparent_content='',$messageType = 1,$platform='android')
     {
         if($platform == 'android'){
-            $template = $this->notificationTemplate('',$content,$messageType,$transparent_content);
+            $template = $this->notificationTemplate($title,$content,$messageType,$transparent_content);
         }else{
-            $template = $this->iosTemplate('' , $content,$transparent_content,$messageType);
+            $template = $this->iosTemplate($title , $content,$transparent_content,$messageType);
         }
         $message = new IGtAppMessage();
         $message->set_isOffline(true);
