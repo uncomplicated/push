@@ -40,7 +40,7 @@ class M201029081014Message extends Migration
         $this->createTable('device',[
             'id' => $this->primaryKey(),
             'uid' => $this->integer(11)->notNull()->comment('用户ID'),
-            'device_no' => $this->string(64)->notNull()->comment('设备号'),
+            'device_no' => $this->string(64)->null()->comment('设备号'),
             'ip' => $this->string(32)->notNull()->comment('IP'),
             'system' => $this->string(32)->notNull()->comment('系统'),
             'version' => $this->string(32)->notNull()->comment('版本号'),
