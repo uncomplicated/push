@@ -72,7 +72,7 @@ class PushSwoole
         });
 
         $pool->on('WorkerStop', function ($pool, $workerId) {
-            echo "Worker#{$workerId} is stopped\n";
+
         });
 
         $pool->start();
