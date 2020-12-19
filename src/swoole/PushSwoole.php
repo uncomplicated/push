@@ -23,6 +23,11 @@ class PushSwoole
         $pool = new Pool($workerNum);
 
         $pool->on('WorkerStart', function ($pool, $workerId) use($config){
+            try{
+
+            }catch (\Exception $e){
+
+            }
             $model = Message::find()->andWhere(['is_deleted' => 0,'push_status'=>MessageEnum::MESSAGE_PUSH_STATUS_DEFAULT])->orderBy(['id' => SORT_DESC])->one();
             if (empty($model)) {
                 return;
@@ -41,6 +46,7 @@ class PushSwoole
                 case MessageEnum::MESSAGE_PUSH_TYPE_BATCH:
                     $deviceModel = Device::find()->where(['is_deleted' => 0,'uid' =>$model->receive_id ])->one();
                     if(empty($deviceModel) || empty($deviceModel->device_no) || (empty($model->title) && empty($model->content)) ){//数据错误
+                        echo '推送失败id为：'.$model->id.', 推送类型:'.$model->push_type.' 错误信息：设备号为空,或者标题和内容同时为空'."\n";
                         $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;
                     }
@@ -62,7 +68,8 @@ class PushSwoole
             }
             if(is_string($res)){
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
-                Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
+                //Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
+                echo '推送失败id为：'.$model->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push'."\n";
                 return false;
             }else{
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
