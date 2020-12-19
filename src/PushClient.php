@@ -91,7 +91,7 @@ class PushClient
                 return true;
             }
             return isset($rep['result']) ? $rep['result'] : '';
-        }catch(RequestException $e){
+        }catch(\Throwable $e){
             $requstId =$e->getRequestId();
             $rep =  $this->igt->pushMessageToSingle($message, $target,$requstId);
             if($rep['result'] == 'ok' && $rep['result'] = 'successed_online'){
@@ -121,7 +121,7 @@ class PushClient
                 return true;
             }
             return isset($rep['result']) ? $rep['result'] : '';
-        }catch(Exception $e){
+        }catch(\Exception $e){
             $rep=$batch->retry();
             if($rep['result'] == 'ok' && $rep['result'] = 'successed_online'){
                 return true;
