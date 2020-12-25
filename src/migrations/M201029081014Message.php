@@ -12,6 +12,7 @@ class M201029081014Message extends Migration
     /**
      * {@inheritdoc}
      */
+    const DEFAULT_OPTION = 'ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
     public function safeUp()
     {
         //消息通知表
@@ -35,7 +36,7 @@ class M201029081014Message extends Migration
             'is_deleted' => $this->boolean()->defaultValue(0),
             'created_by' => $this->integer(10)->null(),
             'updated_by' => $this->integer(10)->null(),
-        ]);
+        ],self::DEFAULT_OPTION);
 
         $this->createTable('device',[
             'id' => $this->primaryKey(),
@@ -50,7 +51,7 @@ class M201029081014Message extends Migration
             'is_deleted' => $this->boolean()->defaultValue(0),
             'created_by' => $this->integer(10)->null(),
             'updated_by' => $this->integer(10)->null(),
-        ]);
+        ],self::DEFAULT_OPTION);
         $this->createIndex('idx_uid','device','uid');
         $this->createIndex('idx_device_no','device','device_no');
     }
