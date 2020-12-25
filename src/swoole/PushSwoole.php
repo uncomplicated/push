@@ -43,6 +43,7 @@ class PushSwoole
                 case MessageEnum::MESSAGE_PUSH_TYPE_BATCH:
                     $deviceModel = Device::find()->where(['is_deleted' => 0,'uid' =>$model->receive_id ])->one();
                     if(empty($deviceModel) || empty($deviceModel->device_no) || (empty($model->title) && empty($model->content)) ){//数据错误
+                        Yii::error('推送失败id为：'.$this->id.'设备号为空,或者标题和内容同时为空','push');
                         $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;
                     }
@@ -62,7 +63,7 @@ class PushSwoole
             }
             if(isset($res) && is_string($res)){
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ERROR);
-                //Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
+                Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
                 return false;
             }else{
                 $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_SUCCESS);
