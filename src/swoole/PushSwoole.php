@@ -31,6 +31,9 @@ class PushSwoole
             if (!Yii::$app->mutex->acquire('lock_' . $model->id)) {
                 return;
             }
+            if($model->push_type == MessageEnum::MESSAGE_PUSH_TYPE_SINGLE && $model->send_id == $model->receive_id){
+                return;
+            }
             $this->updateMessageStatus($model,MessageEnum::MESSAGE_PUSH_STATUS_ONGOING);
             //判断是否推送
             if($model->push_type == MessageEnum::MESSAGE_PUSH_TYPE_UNWANTED){
