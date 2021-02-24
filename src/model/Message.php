@@ -68,7 +68,7 @@ class Message extends \yii\db\ActiveRecord
             'push_type' => '推送类型',
             'push_status' => '推送状态',
             'push_timing_at' => '定时推送时间',
-            'push_user_id' => '推送用户规则ID'
+            'push_user_id' => '推送用户规则ID',
             'push_url' => '推送链接',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
