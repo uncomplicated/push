@@ -1,6 +1,6 @@
 <?php
 
-namespace console\migrations;
+namespace ggss\push\migrations;
 
 use yii\db\Migration;
 
