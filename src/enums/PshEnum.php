@@ -13,11 +13,10 @@
 
 namespace ggss\push\enums;
 
-class MessageEnum
+class PushEnum
 {
 
 
-    const MESSAGE_PUSH_TYPE_UNWANTED = 0;//不需要推送
     const MESSAGE_PUSH_TYPE_SINGLE = 1;//单推
     const MESSAGE_PUSH_TYPE_BATCH = 2;//批量推
     const MESSAGE_PUSH_TYPE_TO_APP = 3;//群推
