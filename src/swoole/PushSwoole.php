@@ -42,8 +42,7 @@ class PushSwoole
             $pushModel = new PushClient($config);
             switch ($model->push_type){
                 case PushEnum::MESSAGE_PUSH_TYPE_SINGLE :
-
-                    if( empty($model->title) && empty($model->content) ){//数据错误
+                    if( (empty($model->title) && empty($model->content) ) || empty($model->device_no) ){//数据错误
                         Yii::error('推送失败id为：'.$this->id.'设备号为空,或者标题和内容同时为空','push');
                         $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;

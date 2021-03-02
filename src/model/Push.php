@@ -40,7 +40,6 @@ class Push extends \yii\db\ActiveRecord
     {
         return [
             [['push_type', 'push_status', 'push_timing_at', 'created_at', 'updated_at', 'deleted_at', 'is_deleted', 'created_by', 'updated_by'], 'integer'],
-            [['created_at'], 'required'],
             [['title', 'device_no','system'], 'string', 'max' => 64],
             [['content', 'push_url'], 'string', 'max' => 255],
         ];
