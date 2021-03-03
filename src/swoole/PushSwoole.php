@@ -30,15 +30,16 @@ class PushSwoole
             if (!Yii::$app->mutex->acquire('lock_' . $model->id)) {
                 return;
             }
-            $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ONGOING);
+
             //判断是否推送
-            if($model->push_type == PushEnum::MESSAGE_PUSH_TYPE_UNWANTED){
-                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
-                return false;
-            }
+//            if($model->push_type == PushEnum::MESSAGE_PUSH_TYPE_UNWANTED){
+//                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
+//                return false;
+//            }
             $pushModel = new PushClient($config);
             switch ($model->push_type){
                 case PushEnum::MESSAGE_PUSH_TYPE_SINGLE :
+                    $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     if( (empty($model->title) && empty($model->content) ) || empty($model->device_no) ){//数据错误
                         Yii::error('推送失败id为：'.$this->id.'设备号为空,或者标题和内容同时为空','push');
                         $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);
@@ -53,9 +54,10 @@ class PushSwoole
                     if(!empty($model->push_timing_at) && $model->push_timing_at > time()){
                         return false;
                     }
-                    if(empty($model->push_timing_at) && isset($config['overtime']) &&  time() - $model->created_at < $config['overtime'] ){
+                    if(empty($model->push_timing_at) && isset($config['overtime']) &&  time() - $model->created_at < $config['overtime'] && YII_ENV_PROD){
                         return false;
                     }
+                    $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ONGOING);
                     $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]));
                     $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
                     break;
