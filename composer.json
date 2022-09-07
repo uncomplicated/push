@@ -2,20 +2,23 @@
     "name": "ggss/push",
     "description": "this is an integrated push class",
     "type": "library",
-    "license": "MIT",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name": "service",
-            "homepage": "http://yhd.china-ceec-cooperation.com/"
+            "email": "service@ggss.com"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
-        "getuilaboratory/getui-pushapi-php-client": "dev-master"
+        "php" : ">=5.5"
+    },
+    "require-dev": {
+        "getuilaboratory/getui-pushapi-php-client-v2": "*"
     },
     "autoload": {
         "psr-4": {
-            "ggss\\push\\" : "src/"
+            "Ggss\\Push\\": "src"
         }
     }
+
 }
