@@ -73,8 +73,7 @@ class PushSwoole
 //                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
 //            }
 
-            $data = empty($res) ? '' : json_decode($res ,true);
-            if(isset($data['code']) && $data['code'] == 200){
+            if(isset($res) && empty($res['code'])){
                 $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
             }else{
                 $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);

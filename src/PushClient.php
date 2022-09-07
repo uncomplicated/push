@@ -122,7 +122,7 @@ class PushClientService
         $push = $this->getParam($title , $content,$transparent_content);
         $push->setCid($cid);
         //处理返回结果
-        $result = $this->api->pushApi()->pushToSingleByCid($push);
+        return $this->api->pushApi()->pushToSingleByCid($push);
     }
 
     //批量单推
@@ -132,12 +132,12 @@ class PushClientService
         $push->setCidList($cid);
         $batch->setMsgList(array($push));
         $batch->setIsAsync(false);
-        $result = $this->api->pushApi()->pushBatchByCid($batch);
+        return $this->api->pushApi()->pushBatchByCid($batch);
     }
     //群推
     public function pushAll($title,$content,$transparent_content=''){
         $push = $this->getParam($title,$content,$transparent_content);
-        $result = $this->api->pushApi()->pushAll($push);
+        return $this->api->pushApi()->pushAll($push);
     }
     //批量单推(已废弃)
     public function pushMessageToSingleBatch(array $cids ,$title , $content ){
@@ -312,7 +312,7 @@ class PushClientService
     }
     public function getParam($title , $content,$transparent_content=''){
         $push = new GTPushRequest();
-        $push->setRequestId(micro_time());
+        $push->setRequestId(uniqid());
         //设置setting
         $set = new GTSettings();
         $set->setTtl(3600000);
@@ -325,11 +325,12 @@ class PushClientService
         $notify = new GTNotification();
         $notify->setTitle($title);
         $notify->setBody($content);
+        $notify->setPayload($transparent_content);
         $notify->setClickType(GTThirdNotification::CLICK_TYPE_STAERAPP);
         $notify->setBadgeAddNum(1);
         $message->setNotification($notify);
         //透传 ，与通知、撤回三选一
-        $message->setTransmission($transparent_content);
+        //$message->setTransmission($transparent_content);
 
         $push->setPushMessage($message);
         //厂商推送消息参数
