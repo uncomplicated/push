@@ -1,7 +1,7 @@
 <?php
 
 
-namespace common\services;
+namespace ggss\push;
 
 use AppConditions;
 use DictionaryAlertMsg;
@@ -34,7 +34,7 @@ use GTNotification;
 use GTPushMessage;
 use GTPushRequest;
 
-class PushClientService
+class PushClient
 {
 
     public $igt;
