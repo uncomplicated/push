@@ -45,7 +45,8 @@ class PushSwoole
                         $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);
                         return false;
                     }
-                    $res = $pushModel->pushMessageToSingle($model->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]),1,$model->system);
+                    //$res = $pushModel->pushMessageToSingle($model->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]),1,$model->system);
+                    $res = $pushModel->pushToSingleByCid($model->device_no,$model->title,$model->content,json_encode(['route' => $model->push_url]));
                     break;
                 case PushEnum::MESSAGE_PUSH_TYPE_BATCH:
                     break;
@@ -58,18 +59,28 @@ class PushSwoole
                         return false;
                     }
                     $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ONGOING);
-                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]));
-                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
+
+//                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]));
+//                    $res = $pushModel->pushMessageToApp($model->title,$model->content,'','',[],json_encode(['route' =>$model->push_url]),1,'ios');
+                    $res = $pushModel->pushAll($model->title,$model->content,json_encode(['route' =>$model->push_url]));
                     break;
             }
-            if(isset($res) && is_string($res)){
+//            if(isset($res) && is_string($res)){
+//                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);
+//                Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
+//                return false;
+//            }else{
+//                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
+//            }
+
+            $data = empty($res) ? '' : json_decode($res ,true);
+            if(isset($data['code']) && $data['code'] == 200){
+                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
+            }else{
                 $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_ERROR);
                 Yii::error('推送失败id为：'.$this->id.', 推送类型:'.$model->push_type.' 错误信息：'.$res,'push');
                 return false;
-            }else{
-                $this->updateMessageStatus($model,PushEnum::MESSAGE_PUSH_STATUS_SUCCESS);
             }
-
             Yii::$app->mutex->release('lock_' . $model->id);
         });
 

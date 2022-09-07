@@ -1,10 +1,19 @@
 <?php
 
 
-namespace ggss\push;
+namespace common\services;
 
 use AppConditions;
 use DictionaryAlertMsg;
+use GTAlert;
+use GTAndroid;
+use GTAps;
+use GTIos;
+use GTPushBatchRequest;
+use GTPushChannel;
+use GTSettings;
+use GTThirdNotification;
+use GTUps;
 use IGeTui;
 use IGtAPNPayload;
 use IGtAppMessage;
@@ -19,7 +28,13 @@ use NotifyInfo_Type;
 use RequestException;
 use SimpleAlertMsg;
 use Yii;
-class PushClient
+
+use GTClient;
+use GTNotification;
+use GTPushMessage;
+use GTPushRequest;
+
+class PushClientService
 {
 
     public $igt;
@@ -31,10 +46,11 @@ class PushClient
     private $masterSecret;
     private $appId;
     private $appSecret;
+    public $api;
     public function __construct($config)
     {
         $this->_init($config);
-        $this->igt = new IGeTui($this->host,$this->appKey, $this->masterSecret);
+        $this->api = new GTClient($this->host,$this->appKey, $this->appId,$this->masterSecret);
     }
 
     private function _init($config)
@@ -68,7 +84,7 @@ class PushClient
             $this->offlineTime = 3600*12*1000;
         }
     }
-    //单推
+    //单推(已废弃)
     public function pushMessageToSingle($cid ,$title , $content,$transparent_content='',$messageType = 1,$platform='android')
     {
         if($platform == 'android'){
@@ -91,7 +107,7 @@ class PushClient
                 return true;
             }
             return isset($rep['result']) ? $rep['result'] : '';
-        }catch(\Throwable $e){
+        }catch(RequestException $e){
             $requstId =$e->getRequestId();
             $rep =  $this->igt->pushMessageToSingle($message, $target,$requstId);
             if($rep['result'] == 'ok' && $rep['result'] = 'successed_online'){
@@ -100,7 +116,30 @@ class PushClient
             return isset($rep['result']) ? $rep['result'] : '';
         }
     }
+
+    public function pushToSingleByCid($cid ,$title , $content,$transparent_content=''){
+        //设置推送参数
+        $push = $this->getParam($title , $content,$transparent_content);
+        $push->setCid($cid);
+        //处理返回结果
+        $result = $this->api->pushApi()->pushToSingleByCid($push);
+    }
+
     //批量单推
+    public function pushBatchByCid(array $cid ,$title , $content,$transparent_content=''){
+        $batch = new GTPushBatchRequest();
+        $push = $this->getParam($title , $content,$transparent_content);
+        $push->setCidList($cid);
+        $batch->setMsgList(array($push));
+        $batch->setIsAsync(false);
+        $result = $this->api->pushApi()->pushBatchByCid($batch);
+    }
+    //群推
+    public function pushAll($title,$content,$transparent_content=''){
+        $push = $this->getParam($title,$content,$transparent_content);
+        $result = $this->api->pushApi()->pushAll($push);
+    }
+    //批量单推(已废弃)
     public function pushMessageToSingleBatch(array $cids ,$title , $content ){
         $batch = new IGtBatch($this->appKey , $this->igt);
         $batch->setApiUrl($this->host);
@@ -121,7 +160,7 @@ class PushClient
                 return true;
             }
             return isset($rep['result']) ? $rep['result'] : '';
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $rep=$batch->retry();
             if($rep['result'] == 'ok' && $rep['result'] = 'successed_online'){
                 return true;
@@ -129,13 +168,13 @@ class PushClient
             return isset($rep['result']) ? $rep['result'] : '';
         }
     }
-    //群推  $condition  ['phoneType' => 'ios','region'=>'上海']
-    public function pushMessageToApp($title,$content, $timing='' , $speed='' , $condition = [],$transparent_content='',$messageType = 1,$platform='android')
+    //群推  (已废弃)
+    public function pushMessageToApp($content, $timing='' , $speed='' , $condition = [],$transparent_content='',$messageType = 1,$platform='android')
     {
         if($platform == 'android'){
-            $template = $this->notificationTemplate($title,$content,$messageType,$transparent_content);
+            $template = $this->notificationTemplate('',$content,$messageType,$transparent_content);
         }else{
-            $template = $this->iosTemplate($title , $content,$transparent_content,$messageType);
+            $template = $this->iosTemplate('' , $content,$transparent_content,$messageType);
         }
         $message = new IGtAppMessage();
         $message->set_isOffline(true);
@@ -270,5 +309,63 @@ class PushClient
         $apn->add_customMsg("payload",$transparent_content);
         $template->set_apnInfo($apn);
         return $template;
+    }
+    public function getParam($title , $content,$transparent_content=''){
+        $push = new GTPushRequest();
+        $push->setRequestId(micro_time());
+        //设置setting
+        $set = new GTSettings();
+        $set->setTtl(3600000);
+//    $set->setSpeed(1000);
+//    $set->setScheduleTime(1591794372930);
+        $push->setSettings($set);
+        //设置PushMessage，
+        $message = new GTPushMessage();
+        //通知
+        $notify = new GTNotification();
+        $notify->setTitle($title);
+        $notify->setBody($content);
+        $notify->setClickType(GTThirdNotification::CLICK_TYPE_STAERAPP);
+        $notify->setBadgeAddNum(1);
+        $message->setNotification($notify);
+        //透传 ，与通知、撤回三选一
+        $message->setTransmission($transparent_content);
+
+        $push->setPushMessage($message);
+        //厂商推送消息参数
+        $pushChannel = new GTPushChannel();
+        //ios
+        $ios = new GTIos();
+        $ios->setType("notify");
+        $ios->setAutoBadge("1");
+        $ios->setPayload($transparent_content);
+        //$ios->setApnsCollapseId("apnsCollapseId");
+        //aps设置
+        $aps = new GTAps();
+
+        $alert = new GTAlert();
+        $alert->setTitle($title);
+        $alert->setBody($content);
+        $alert->setSubtitleLocArgs([]);
+        $aps->setAlert($alert);
+        $ios->setAps($aps);
+        $pushChannel->setIos($ios);
+        //安卓
+        $android = new GTAndroid();
+        $ups = new GTUps();
+//    $ups->setTransmission("ups Transmission");
+        $thirdNotification = new GTThirdNotification();
+        $thirdNotification->setTitle($title);
+        $thirdNotification->setBody($content);
+        $thirdNotification->setPayload($transparent_content);
+        $thirdNotification->setClickType(GTThirdNotification::CLICK_TYPE_STAERAPP);
+        $ups->addOption("HW","badgeAddNum",1);
+        $ups->addOption("OP","channel","Default");
+        $ups->setNotification($thirdNotification);
+        $android->setUps($ups);
+        $pushChannel->setAndroid($android);
+        $push->setPushChannel($pushChannel);
+
+        return $push;
     }
 }
