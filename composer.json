@@ -1,5 +1,6 @@
 {
     "name": "ggss/push",
+    "version" : "0.1",
     "description": "this is an integrated push class",
     "type": "library",
     "authors": [
@@ -11,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php" : ">=5.5",
-        "getuilaboratory/getui-pushapi-php-client-v2": "dev-master"
+        "getuilaboratory/getui-pushapi-php-client-v2": "@dev"
     },
     "require-dev": {
 
