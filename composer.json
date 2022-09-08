@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "getuilaboratory/getui-pushapi-php-client-v2": "dev-master"
+        "getuilaboratory/getui-pushapi-php-client-v2": "@dev"
     },
     "autoload": {
         "psr-4": {
