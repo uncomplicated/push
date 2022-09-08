@@ -3,7 +3,7 @@
     "description": "this is an integrated push class",
     "type": "library",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "service",
@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        
+        "getuilaboratory/getui-pushapi-php-client-v2": "dev-master"
     },
     "autoload": {
         "psr-4": {
