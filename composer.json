@@ -9,7 +9,7 @@
             "email": "service@ggss.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "php" : ">=5.5"
 
